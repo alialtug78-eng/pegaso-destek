@@ -51,6 +51,8 @@ jobs:
 
       - name: Pegaso Destek markalaması
         shell: bash
+        env:
+          PEGASO_SURUM: ${{ inputs.surum }}
         run: bash pegaso/apply.sh
 
       - name: Restore bridge files
