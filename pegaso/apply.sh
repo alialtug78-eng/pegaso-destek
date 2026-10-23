@@ -4,7 +4,8 @@
 # müşteri hiçbir ayar girmez.
 set -euo pipefail
 
-SUNUCU="${PEGASO_SUNUCU:-159.65.56.11}"
+# Alan adı (DNS-only, Cloudflare proxy KAPALI olmalı): sunucu değişirse yalnız DNS güncellenir.
+SUNUCU="${PEGASO_SUNUCU:-destek.pegaso.com.tr}"
 ANAHTAR="${PEGASO_ANAHTAR:-Am9YfgJQGkUDKNLorEVhWdrFK5isyI1xoVWbdIDC4VU=}"
 AD="PegasoDestek"
 GORUNEN_AD="Pegaso Destek"
