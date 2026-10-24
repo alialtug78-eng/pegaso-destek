@@ -74,13 +74,13 @@ degistir src/lang.rs '                    s = s.replace("RustDesk", &app_name);
                 } else {' '                    s = s.replace("RustDesk", "Pegaso Destek");
                 } else {'
 F=flutter/lib/common.dart
-degistir $F 'static const Color accent = Color(0xFF0071FF);' 'static const Color accent = Color(0xFFC8102E);'
-degistir $F 'static const Color accent50 = Color(0x770071FF);' 'static const Color accent50 = Color(0x77C8102E);'
-degistir $F 'static const Color accent80 = Color(0xAA0071FF);' 'static const Color accent80 = Color(0xAAC8102E);'
-degistir $F 'static const Color idColor = Color(0xFF00B6F0);' 'static const Color idColor = Color(0xFFC8102E);'
-degistir $F 'static const Color button = Color(0xFF2C8CFF);' 'static const Color button = Color(0xFFC8102E);'
+degistir $F 'static const Color accent = Color(0xFF0071FF);' 'static const Color accent = Color(0xFFFF6B00);'
+degistir $F 'static const Color accent50 = Color(0x770071FF);' 'static const Color accent50 = Color(0x77FF6B00);'
+degistir $F 'static const Color accent80 = Color(0xAA0071FF);' 'static const Color accent80 = Color(0xAAFF6B00);'
+degistir $F 'static const Color idColor = Color(0xFF00B6F0);' 'static const Color idColor = Color(0xFFFF6B00);'
+degistir $F 'static const Color button = Color(0xFF2C8CFF);' 'static const Color button = Color(0xFFFF6B00);'
 degistir $F '  return Color(0xFF2C8CFF);
-}' '  return Color(0xFFC8102E);
+}' '  return Color(0xFFFF6B00);
 }'
 degistir $F 'primary: Colors.blue, secondary: accent, background: grayBg),' 'primary: accent, secondary: accent, background: grayBg),'
 degistir $F '      primary: Colors.blue,
@@ -88,19 +88,63 @@ degistir $F '      primary: Colors.blue,
       secondary: accent,'
 degistir $F "launchUrl(Uri.parse('https://rustdesk.com'));" "launchUrl(Uri.parse('https://pegaso.com.tr'));"
 degistir flutter/lib/desktop/pages/server_page.dart '            Color(0xff00bfe1),
-            Color(0xff0071ff),' '            Color(0xffE63950),
-            Color(0xffA50D24),'
+            Color(0xff0071ff),' '            Color(0xffFF8A3D),
+            Color(0xffE05500),'
 degistir flutter/lib/desktop/widgets/tabbar_widget.dart '                              "RustDesk",' '                              "Pegaso Destek",'
 degistir flutter/lib/desktop/pages/connection_page.dart 'const url = "https://rustdesk.com/pricing";' 'const url = "https://pegaso.com.tr";'
 degistir flutter/lib/desktop/pages/install_page.dart "'https://rustdesk.com/privacy.html'" "'https://pegaso.com.tr/sayfa/gizlilik-politikasi'"
 S=flutter/lib/desktop/pages/desktop_setting_page.dart
 degistir $S "launchUrlString('https://rustdesk.com/privacy.html');" "launchUrlString('https://pegaso.com.tr/sayfa/gizlilik-politikasi');"
 degistir $S "launchUrlString('https://rustdesk.com');" "launchUrlString('https://pegaso.com.tr');"
-degistir $S "decoration: const BoxDecoration(color: Color(0xFF2c8cff))," "decoration: const BoxDecoration(color: Color(0xFFC8102E)),"
+degistir $S "decoration: const BoxDecoration(color: Color(0xFF2c8cff))," "decoration: const BoxDecoration(color: Color(0xFFFF6B00)),"
 degistir $S "Text('\${translate('Version')}: \$version')" "Text('\${translate('Version')}: ${PEGASO_SURUM:+$PEGASO_SURUM (çekirdek }\$version${PEGASO_SURUM:+)}')"
 degistir $S "'Copyright © \${DateTime.now().toString().substring(0, 4)} Purslane Tech Pte. Ltd.\\n\$license'," \
             "'© \${DateTime.now().toString().substring(0, 4)} Pegaso Güvenlik · pegaso.com.tr\\nDestek: +90 850 259 77 47 · info@pegaso.com.tr\\nAçık kaynak RustDesk tabanlıdır (AGPL-3.0) · Kaynak kod: github.com/alialtug78-eng/pegaso-destek\\n\$license',"
 degistir $S "                            translate('Slogan_tip')," "                            'Güvenli uzaktan destek',"
+
+# Yeni ana ekran (1.0.6): kullanıcının verdiği tasarım (ekrangoruntusu/PegasoDestek.png) — koyu tema,
+# iki kart, "Bağlan / Bağlantılarım" sekmeleri. Kur kartı, hizmet uyarıları ve durum çubuğu korunur.
+cp "$P/flutter/pegaso_ana_sayfa.dart" flutter/lib/desktop/pages/pegaso_ana_sayfa.dart
+H=flutter/lib/desktop/pages/desktop_home_page.dart
+degistir $H "import '../widgets/button.dart';" "import '../widgets/button.dart';
+import 'package:flutter_hbb/desktop/pages/pegaso_ana_sayfa.dart';"
+degistir $H '    return _buildBlock(
+        child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildLeftPane(context),
+        if (!isIncomingOnly) const VerticalDivider(width: 1),
+        if (!isIncomingOnly) Expanded(child: buildRightPane(context)),
+      ],
+    ));' '    if (!isIncomingOnly) {
+      return _buildBlock(
+          child: PegasoAnaSayfa(
+              ustUyari: buildPresetPasswordWarning(),
+              yardimKartlari: Obx(
+                  () => buildHelpCards(stateGlobal.updateUrl.value))));
+    }
+    return _buildBlock(
+        child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        buildLeftPane(context),
+        if (!isIncomingOnly) const VerticalDivider(width: 1),
+        if (!isIncomingOnly) Expanded(child: buildRightPane(context)),
+      ],
+    ));'
+degistir $H '                  Color.fromARGB(255, 226, 66, 188),
+                  Color.fromARGB(255, 244, 114, 124),' '                  Color(0xFFFF8A3D),
+                  Color(0xFFE05500),'
+# Varsayılan tema koyu; koyu temanın zeminleri tasarımdaki tonlara çekilir.
+degistir $C '    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();' \
+            '    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("theme".to_owned(), "dark".to_owned())]));'
+degistir $F 'Color(0xFF18191E)' 'Color(0xFF141414)'
+degistir $F 'Color(0xFF24252B)' 'Color(0xFF1E1E1E)'
+# "Şifreyi kaydet": ana ekran bağlanmadan önce eş ayarına pegaso-sifre-kaydet=Y yazar; giriş başarılı
+# olunca RustDesk'in kendi "remember" yolu şifreyi eş yapılandırmasına kaydeder.
+degistir src/client.rs '        self.remember = !config.password.is_empty();' \
+                       '        self.remember = !config.password.is_empty()
+            || config.options.get("pegaso-sifre-kaydet").map_or(false, |v| v == "Y");'
 
 cp "$P/assets/icon.ico" res/icon.ico
 cp "$P/assets/icon.ico" res/tray-icon.ico
