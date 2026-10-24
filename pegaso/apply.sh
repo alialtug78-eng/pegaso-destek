@@ -30,6 +30,18 @@ degistir $C 'pub const RS_PUB_KEY: &str = "OeVuKk5nlHiXp+APNn0Y3pC1Iwpwn44JGqrQC
             "pub const RS_PUB_KEY: &str = \"$ANAHTAR\";"
 degistir $C 'RwLock::new("RustDesk".to_owned());' "RwLock::new(\"$AD\".to_owned());"
 
+# Hesap girişi admin.rustdesk.com'a gidiyordu; girişli istemcide access_token yüzünden bizim hbbs'in
+# desteklemediği anahtar değişimini bekleyip "Failed to secure tcp: deadline has elapsed" veriyordu.
+# Hesap arayüzü gizlenir, API (rustdesk.com) kapatılır.
+degistir $C '    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();' \
+            '    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("disable-account".to_owned(), "Y".to_owned())]));'
+degistir $C '    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();' \
+            '    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("register-device".to_owned(), "N".to_owned())]));'
+# Önceden giriş yapılmış istemcilerde kalan access_token da bağlantıyı kilitlemesin: hbbs'imiz
+# (OSS 1.1.16) bu anahtar değişimini hiç yapmıyor, o yüzden bu yol tamamen kapatılır.
+degistir src/client.rs '!key.is_empty() && (!token.is_empty() || !switch_code.is_empty())' \
+                       'false && !key.is_empty() && (!token.is_empty() || !switch_code.is_empty())'
+
 degistir flutter/windows/runner/Runner.rc '"ProductName", "RustDesk"' "\"ProductName\", \"$GORUNEN_AD\""
 degistir flutter/windows/runner/Runner.rc '"FileDescription", "RustDesk Remote Desktop"' "\"FileDescription\", \"$ACIKLAMA\""
 degistir Cargo.toml 'ProductName = "RustDesk"' "ProductName = \"$GORUNEN_AD\""
