@@ -36,7 +36,7 @@ degistir $C 'RwLock::new("RustDesk".to_owned());' "RwLock::new(\"$AD\".to_owned(
 degistir $C '    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();' \
             '    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("disable-account".to_owned(), "Y".to_owned())]));'
 degistir $C '    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();' \
-            '    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("register-device".to_owned(), "N".to_owned())]));'
+            '    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("register-device".to_owned(), "N".to_owned()), ("hide-powered-by-me".to_owned(), "Y".to_owned())]));'
 # Önceden giriş yapılmış istemcilerde kalan access_token da bağlantıyı kilitlemesin: hbbs'imiz
 # (OSS 1.1.16) bu anahtar değişimini hiç yapmıyor, o yüzden bu yol tamamen kapatılır.
 degistir src/client.rs '!key.is_empty() && (!token.is_empty() || !switch_code.is_empty())' \
@@ -66,6 +66,41 @@ for eski, yeni in (
     s = s.replace(eski, yeni)
 open(p, 'w', encoding='utf-8', newline='').write(s)
 EOF
+
+# Arayüz markalaması (1.0.5): Pegaso kırmızısı, rustdesk.com bağlantıları pegaso.com.tr'ye, görünen ad
+# "Pegaso Destek". APP_NAME (PegasoDestek) değişmez: hizmet adı, ayar klasörü ve pencere bulma ona bağlı.
+# AGPL gereği Hakkında sayfasında RustDesk tabanı ve kaynak kod bağlantısı kalır.
+degistir src/lang.rs '                    s = s.replace("RustDesk", &app_name);
+                } else {' '                    s = s.replace("RustDesk", "Pegaso Destek");
+                } else {'
+F=flutter/lib/common.dart
+degistir $F 'static const Color accent = Color(0xFF0071FF);' 'static const Color accent = Color(0xFFC8102E);'
+degistir $F 'static const Color accent50 = Color(0x770071FF);' 'static const Color accent50 = Color(0x77C8102E);'
+degistir $F 'static const Color accent80 = Color(0xAA0071FF);' 'static const Color accent80 = Color(0xAAC8102E);'
+degistir $F 'static const Color idColor = Color(0xFF00B6F0);' 'static const Color idColor = Color(0xFFC8102E);'
+degistir $F 'static const Color button = Color(0xFF2C8CFF);' 'static const Color button = Color(0xFFC8102E);'
+degistir $F '  return Color(0xFF2C8CFF);
+}' '  return Color(0xFFC8102E);
+}'
+degistir $F 'primary: Colors.blue, secondary: accent, background: grayBg),' 'primary: accent, secondary: accent, background: grayBg),'
+degistir $F '      primary: Colors.blue,
+      secondary: accent,' '      primary: accent,
+      secondary: accent,'
+degistir $F "launchUrl(Uri.parse('https://rustdesk.com'));" "launchUrl(Uri.parse('https://pegaso.com.tr'));"
+degistir flutter/lib/desktop/pages/server_page.dart '            Color(0xff00bfe1),
+            Color(0xff0071ff),' '            Color(0xffE63950),
+            Color(0xffA50D24),'
+degistir flutter/lib/desktop/widgets/tabbar_widget.dart '                              "RustDesk",' '                              "Pegaso Destek",'
+degistir flutter/lib/desktop/pages/connection_page.dart 'const url = "https://rustdesk.com/pricing";' 'const url = "https://pegaso.com.tr";'
+degistir flutter/lib/desktop/pages/install_page.dart "'https://rustdesk.com/privacy.html'" "'https://pegaso.com.tr/sayfa/gizlilik-politikasi'"
+S=flutter/lib/desktop/pages/desktop_setting_page.dart
+degistir $S "launchUrlString('https://rustdesk.com/privacy.html');" "launchUrlString('https://pegaso.com.tr/sayfa/gizlilik-politikasi');"
+degistir $S "launchUrlString('https://rustdesk.com');" "launchUrlString('https://pegaso.com.tr');"
+degistir $S "decoration: const BoxDecoration(color: Color(0xFF2c8cff))," "decoration: const BoxDecoration(color: Color(0xFFC8102E)),"
+degistir $S "Text('\${translate('Version')}: \$version')" "Text('\${translate('Version')}: ${PEGASO_SURUM:+$PEGASO_SURUM (çekirdek }\$version${PEGASO_SURUM:+)}')"
+degistir $S "'Copyright © \${DateTime.now().toString().substring(0, 4)} Purslane Tech Pte. Ltd.\\n\$license'," \
+            "'© \${DateTime.now().toString().substring(0, 4)} Pegaso Güvenlik · pegaso.com.tr\\nDestek: +90 850 259 77 47 · info@pegaso.com.tr\\nAçık kaynak RustDesk tabanlıdır (AGPL-3.0) · Kaynak kod: github.com/alialtug78-eng/pegaso-destek\\n\$license',"
+degistir $S "                            translate('Slogan_tip')," "                            'Güvenli uzaktan destek',"
 
 cp "$P/assets/icon.ico" res/icon.ico
 cp "$P/assets/icon.ico" res/tray-icon.ico
