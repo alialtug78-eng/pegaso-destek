@@ -12,11 +12,11 @@ import 'package:flutter_hbb/models/server_model.dart';
 import 'package:provider/provider.dart';
 
 const _turuncu = Color(0xFFFF6B00);
-const _kart = Color(0xFF222222);
-const _alan = Color(0xFF1A1A1A);
-const _cerceve = Color(0xFF333333);
-const _dugme = Color(0xFF2E2E2E);
-const _soluk = Color(0xFFB0B0B0);
+const _kart = Color(0xFF283446);
+const _alan = Color(0xFF1F2938);
+const _cerceve = Color(0xFF3B4A62);
+const _dugme = Color(0xFF35445C);
+const _soluk = Color(0xFFA9B5C7);
 const _sifreKaydetAnahtari = 'pegaso-sifre-kaydet';
 
 class PegasoAnaSayfa extends StatefulWidget {

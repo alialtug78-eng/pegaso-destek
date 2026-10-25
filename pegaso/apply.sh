@@ -135,11 +135,13 @@ degistir $H '    return _buildBlock(
 degistir $H '                  Color.fromARGB(255, 226, 66, 188),
                   Color.fromARGB(255, 244, 114, 124),' '                  Color(0xFFFF8A3D),
                   Color(0xFFE05500),'
-# Varsayılan tema koyu; koyu temanın zeminleri tasarımdaki tonlara çekilir.
+# Varsayılan tema koyu; koyu temanın zeminleri kurumsal lacivert-arduvaz tonlarına çekilir (1.0.7: siyah yerine).
 degistir $C '    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();' \
             '    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("theme".to_owned(), "dark".to_owned())]));'
-degistir $F 'Color(0xFF18191E)' 'Color(0xFF141414)'
-degistir $F 'Color(0xFF24252B)' 'Color(0xFF1E1E1E)'
+degistir $F 'Color(0xFF18191E)' 'Color(0xFF1C2533)'
+degistir $F 'Color(0xFF24252B)' 'Color(0xFF283446)'
+degistir $F 'hoverColor: Color.fromARGB(255, 45, 46, 53),' 'hoverColor: Color(0xFF33415A),'
+degistir $F 'backgroundColor: MaterialStatePropertyAll(Color(0xFF121212))' 'backgroundColor: MaterialStatePropertyAll(Color(0xFF222D3D))'
 # "Şifreyi kaydet": ana ekran bağlanmadan önce eş ayarına pegaso-sifre-kaydet=Y yazar; giriş başarılı
 # olunca RustDesk'in kendi "remember" yolu şifreyi eş yapılandırmasına kaydeder.
 degistir src/client.rs '        self.remember = !config.password.is_empty();' \
